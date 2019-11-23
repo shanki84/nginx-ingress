@@ -1,0 +1,24 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: samsung-app
+  labels:
+    app: samsung
+spec:
+  containers:
+    - name: samsung-app
+      image: hashicorp/http-echo
+      args:
+        - "-text=samsung"
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: samsung-service
+spec:
+  selector:
+    app: samsung
+  ports:
+    - port: 5678 # Default port for image
