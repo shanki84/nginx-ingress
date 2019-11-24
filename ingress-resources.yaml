@@ -1,0 +1,25 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: demoapp-ingress
+  namespace: demoapp
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/add-base-url : "true"
+spec:
+  rules:
+  - host:
+    http:
+      paths:
+      - path: /apple
+        backend:
+          serviceName: apple-app
+          servicePort: 8080
+  - host:
+    http:
+      paths:
+      - path: /samsung
+        backend:
+          serviceName: samsung-app
+          servicePort: 8080
