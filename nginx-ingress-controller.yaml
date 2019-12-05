@@ -167,6 +167,7 @@ subjects:
   - kind: ServiceAccount
     name: nginx-ingress-serviceaccount
     namespace: ingress-nginx
+
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
@@ -195,7 +196,7 @@ metadata:
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: ingress-nginx
@@ -213,14 +214,11 @@ spec:
       terminationGracePeriodSeconds: 300
       serviceAccountName: nginx-ingress-serviceaccount
       nodeSelector:
-        beta.kubernetes.io/os: linux
+        kubernetes.io/os: linux
       containers:
         - name: nginx-ingress-controller
           image: quay.io/kubernetes-ingress-controller/nginx-ingress-controller:0.26.1
           args:
-            #- --ingress-classes
-            #  nginx
-            #  internal
             - /nginx-ingress-controller
             - --configmap=$(POD_NAMESPACE)/nginx-configuration
             - --tcp-services-configmap=$(POD_NAMESPACE)/tcp-services
@@ -248,8 +246,10 @@ spec:
           ports:
             - name: http
               containerPort: 80
+              protocol: TCP
             - name: https
               containerPort: 443
+              protocol: TCP
           livenessProbe:
             failureThreshold: 3
             httpGet:
@@ -274,4 +274,5 @@ spec:
               exec:
                 command:
                   - /wait-shutdown
+
 ---
